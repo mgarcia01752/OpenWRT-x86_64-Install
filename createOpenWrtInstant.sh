@@ -7,7 +7,7 @@
 #you may not use this file except in compliance with the License.
 #You may obtain a copy of the License at
 #
- #   http://www.apache.org/licenses/LICENSE-2.0
+#	http://www.apache.org/licenses/LICENSE-2.0
 #
 #Unless required by applicable law or agreed to in writing, software
 #distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,7 @@ OPENWRT_WORKING_BRANCH_VER=${OPENWRT_DEFAULT_BRANCH}
 OPENWRT_DEFAULT_x86_64_CONFIG="_.config-x86_64-base-configuration"
 OPENWRT_WD=$PWD
 
-FRESH_INSTALL=${FALSE};
+FRESH_INSTALL="";
 
 				############
 				#  Functions
@@ -171,13 +171,14 @@ while getopts "b:frm" OPTION; do
 			usage
 			exit
 			;;
+			
 	esac
 done
 shift $((OPTIND-1))
 
-if [ -n "${FRESH_INSTALL}" ]; then
+if [  -n "${FRESH_INSTALL}"  ]; then
 	
-	echo "Removing all openWRT directories"
+	echo "Removing all OpenWRT directories"
 	remove_openwrt_instance
 	
 	echo "Cloning OpenWRT ${OPENWRT_WORKING_BRANCH_VER} Branch"
@@ -185,7 +186,7 @@ if [ -n "${FRESH_INSTALL}" ]; then
 
 fi
 
-if [ -d "openwrt" ] && [ ! -n "${FRESH_INSTALL}" ]; then
+if [ -d "openwrt" ]  &&  [  ! -n "${FRESH_INSTALL}"  ]; then
 
 	echo "Updating existing OpenWRT repository from Git Site"	
 	pull_latest_openwrt_updates
