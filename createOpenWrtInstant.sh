@@ -48,59 +48,59 @@ prepare_openwrt_installation () {
 
 pull_latest_openwrt_updates () {
 
-  cd $OPENWRT_WD/openwrt
-  git pull
+	cd $OPENWRT_WD/openwrt
+	git pull
 
-  cd $OPENWRT_WD/luci  
-  git pull
-  
-  cd $OPENWRT_WD/packages
-  git pull
-  
-  cd $OPENWRT_WD/telephony
-  git pull
-  
-  cd $OPENWRT_WD
+	cd $OPENWRT_WD/luci  
+	git pull
+
+	cd $OPENWRT_WD/packages
+	git pull
+
+	cd $OPENWRT_WD/telephony
+	git pull
+
+	cd $OPENWRT_WD
 }
 
 create_local_openwrt_clone () {
-  git clone https://github.com/openwrt/openwrt.git
-  git clone https://github.com/openwrt/packages.git
-  git clone https://github.com/openwrt/luci.git
-  git clone https://github.com/openwrt/telephony.git
+	git clone https://github.com/openwrt/openwrt.git
+	git clone https://github.com/openwrt/packages.git
+	git clone https://github.com/openwrt/luci.git
+	git clone https://github.com/openwrt/telephony.git
 }
 
 change_local_openwrt_branch () {
 	
-  cd $OPENWRT_WD/openwrt
-  git checkout $1
+	cd $OPENWRT_WD/openwrt
+	git checkout $1
 	
-  cd $OPENWRT_WD/packages
-  git checkout $1
+	cd $OPENWRT_WD/packages
+	git checkout $1
 	
-  cd $OPENWRT_WD/luci
-  git checkout $1
+	cd $OPENWRT_WD/luci
+	git checkout $1
 	
-  cd $OPENWRT_WD/telephony
-  git checkout $1
+	cd $OPENWRT_WD/telephony
+	git checkout $1
 	
-  cd $OPENWRT_WD
+	cd $OPENWRT_WD
 }
 
 create_local_openwrt_feeds_config () {
-  
-  FEEDS_FILE="$OPENWRT_WD/openwrt/feeds.conf"
-  
-  echo "src-link packages $OPENWRT_WD/packages" > $FEEDS_FILE
-  echo "src-link luci $OPENWRT_WD/luci" >> $FEEDS_FILE
-  echo "src-link routing $OPENWRT_WD/routing" >> $FEEDS_FILE
-  echo "src-link telephony $OPENWRT_WD/telephony" >> $FEEDS_FILE
+
+	FEEDS_FILE="$OPENWRT_WD/openwrt/feeds.conf"
+
+	echo "src-link packages $OPENWRT_WD/packages" > $FEEDS_FILE
+	echo "src-link luci $OPENWRT_WD/luci" >> $FEEDS_FILE
+	echo "src-link routing $OPENWRT_WD/routing" >> $FEEDS_FILE
+	echo "src-link telephony $OPENWRT_WD/telephony" >> $FEEDS_FILE
 
 }
 
 update_local_openwrt_feeds_packages () {
-  $OPENWRT_WD/openwrt/scripts/feeds update -a
-  $OPENWRT_WD/openwrt/scripts/feeds install -a
+	$OPENWRT_WD/openwrt/scripts/feeds update -a
+	$OPENWRT_WD/openwrt/scripts/feeds install -a
 }
 
 usage () {
@@ -133,31 +133,31 @@ build_openwrt () {
 							########
 
 while getopts "b:frm" OPTION; do
-    case $OPTION in
+	case $OPTION in
 	
-        b)
+		b)
 			OPENWRT_WORKING_BRANCH_VER="$OPTARG"
 			echo "OpenWRT branch selected:  $OPENWRT_WORKING_BRANCH_VER"
-            ;;
+			;;
 			
-        f)
+		f)
 			FRESH_INSTALL=${TRUE}
-            ;;
+			;;
 			
 		r)
 			remove_openwrt_instance
 			exit;			
-            ;;
+			;;
 			
 		m)
 			MAKE_OPENWRT=${TRUE}
 			;;
 			
-        ?)
-            usage
+		?)
+			usage
 			exit
-            ;;
-    esac
+			;;
+	esac
 done
 shift $((OPTIND-1))
 
