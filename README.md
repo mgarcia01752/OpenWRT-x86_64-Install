@@ -2,11 +2,11 @@
 
 This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy and EFI bootup. This installing has only been tested on Ubuntu 20.04, but there is no reason why it would not work on earlier releases.
 
-Step 1:
+## Step 1:
 
 git clone https://github.com/mgarcia01752/OpenWRT-x86_64-Install.git
 
-Step 2:
+## Step 2:
 
   Copy and Paste the following and make sure that each of the required packages are installed
 
@@ -34,7 +34,7 @@ Step 2:
 	sudo apt-get install build-essential libncurses5 zlib1g flex
 	sudo apt-get install libncurses-dev
 
-Step 3:
+## Step 3:
 
 run: createOpenWrtInstant.sh
 
