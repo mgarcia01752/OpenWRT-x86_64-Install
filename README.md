@@ -4,11 +4,7 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 
 ## Step 1:
 
-git clone https://github.com/mgarcia01752/OpenWRT-x86_64-Install.git
-
-## Step 2:
-
-  Copy and Paste the following and make sure that each of the required packages are installed
+  Copy and Paste the following and make sure that each of the required packages are installed. You may need to run this a couple of times.
 
 	sudo apt-get install git
 	sudo apt-get install make
@@ -34,9 +30,15 @@ git clone https://github.com/mgarcia01752/OpenWRT-x86_64-Install.git
 	sudo apt-get install build-essential libncurses5 zlib1g flex
 	sudo apt-get install libncurses-dev
 
+
+## Step 2:
+
+	git clone https://github.com/mgarcia01752/OpenWRT-x86_64-Install.git
+
+
 ## Step 3:
 
-run: createOpenWrtInstant.sh
+	run: createOpenWrtInstant.sh
 
 
 
