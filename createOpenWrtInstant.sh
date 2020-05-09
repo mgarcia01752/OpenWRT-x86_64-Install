@@ -5,7 +5,7 @@ FALSE=0;
 
 OPENWRT_DEFAULT_BRANCH="master"
 OPENWRT_WORKING_BRANCH_VER=${OPENWRT_DEFAULT_BRANCH}
-OPENWRT_DEFAULT_x86_64_CONFIG="_.config-default-x86_64"
+OPENWRT_DEFAULT_x86_64_CONFIG="_.config-x86_64-base-configuration"
 OPENWRT_WD=$PWD
 
 FRESH_INSTALL=FALSE;
@@ -117,7 +117,7 @@ usage () {
 }
 
 copy_x86_64_default_config () {
-	cp config/_.config-x86_64-base-configuration openwrt/
+	cp config/${OPENWRT_DEFAULT_x86_64_CONFIG} openwrt/
 }
 
 build_openwrt () {
