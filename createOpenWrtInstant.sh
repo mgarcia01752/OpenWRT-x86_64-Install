@@ -4,23 +4,20 @@ TRUE=1;
 FALSE=0;
 
 OPENWRT_DEFAULT_BRANCH="master"
+OPENWRT_WORKING_BRANCH_VER=${OPENWRT_DEFAULT_BRANCH}
 OPENWRT_DEFAULT_x86_64_CONFIG="_.config-default-x86_64"
 OPENWRT_WD=$PWD
 
 FRESH_INSTALL=FALSE;
 
-if [ -z "$OPENWRT_WORKING_BRANCH_VER" ]; then
-	OPENWRT_WORKING_BRANCH_VER=$OPENWRT_DEFAULT_BRANCH
-fi
 
 
-				#############
-				# Functions #
-				#############
+				############
+				#	Functions	#
+				############
 				
-
 remove_openwrt_instance() {
-  rm -rf 
+  rm -rf openwrt/ luci/ telephony/ packages/
 }
 
 prepare_openwrt_installation () {
@@ -115,61 +112,70 @@ usage () {
 	printf "\t-f, --fresh\t\tFresh Install, Remove previous installation\n"
 	printf "\t-b, --branch [${OPENWRT_DEFAULT_BRANCH}]\tOpenWRT install branch\n"
 	printf "\t-r, --remove\t\tRemove OpenWRT directories, then exit\n"
+	print "\t-make\t\tBuild OpenWRT\n"
 	printf "\n\n\n"
 }
 
-cli () {
-
-	for i in "$@"
-		do
-			case $i in
-			
-				-b=*|--branch=*)
-					OPENWRT_WORKING_BRANCH_VER="${i#*=}"
-					shift # past argument=value
-				;;
-				
-				-fi=*|--fresh=*)
-					FRESH_INSTALL=TRUE
-				;;
-				
-				-r=*|--remove=*)
-					remove_openwrt_instance
-					exit;
-				;;
-							
-				*)
-					  usage
-					  exit
-				;;
-			esac
-	done
-
+copy_x86_64_default_config () {
+	cp config/_.config-x86_64-base-configuration openwrt/
 }
 
-copy_x86_64_default_config () {
-	cp _.config-default-x86_64 openwrt/
+build_openwrt () {
+	cd ${OPENWRT_WD}/openwrt
+	
+	make defconfig
+	
+	make -j10
 }
 
 							########
 							#	MAIN	#
 							########
 
-cli
+while getopts "b:frm" OPTION; do
+    case $OPTION in
+	
+        b)
+			OPENWRT_WORKING_BRANCH_VER="$OPTARG"
+			echo "OpenWRT branch selected:  $OPENWRT_WORKING_BRANCH_VER"
+            ;;
+			
+        f)
+			FRESH_INSTALL=${TRUE}
+            ;;
+			
+		r)
+			remove_openwrt_instance
+			exit;			
+            ;;
+			
+		m)
+			MAKE_OPENWRT=${TRUE}
+			;;
+			
+        ?)
+            usage
+			exit
+            ;;
+    esac
+done
+shift $((OPTIND-1))
 
-if [[ -z $1 ]]; then
- usage
- echo
+if [ -n "${FRESH_INSTALL}" ]; then
+	
+	echo "Removing all openWRT directories"
+	remove_openwrt_instance
+	
+	echo "Cloning OpenWRT ${OPENWRT_WORKING_BRANCH_VER} Branch"
+	create_local_openwrt_clone
+
 fi
 
-#Install or Update Existing OpenWRT
+if [ -d "openwrt" ] && [ ! -n "${FRESH_INSTALL}" ]; then
 
-echo "Cloning OpenWRT ${OPENWRT_WORKING_BRANCH_VER} Branch"
-
-if [ -d "openwrt" ]; then
+	echo "Updating existing OpenWRT repository from Git Site"	
 	pull_latest_openwrt_updates
-else 
-  	create_local_openwrt_clone
+
 fi
 
 change_local_openwrt_branch $OPENWRT_WORKING_BRANCH_VER
@@ -179,5 +185,9 @@ create_local_openwrt_feeds_config
 update_local_openwrt_feeds_packages
 
 copy_x86_64_default_config
+
+if [ -n ${MAKE_OPENWRT} ]; then
+	build_openwrt
+fi
 
 
