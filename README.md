@@ -38,7 +38,16 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 
 ## Step 3:
 
-	run: createOpenWrtInstant.sh
+  This step will: 
+  	
+  	1. Clone and create the required OpenWRT directories.
+  	2. Create a feeds.conf file that is needed to point the required packages to the local computer
+  	3. Copy a base x86_64 configuration file that is needed to setup the gcc toolchain for compiling
+
+  Copy/Paste the following:
+  
+	cd OpenWRT-x86_64-Install
+	createOpenWrtInstant.sh
 
 
 
