@@ -120,12 +120,12 @@ usage () {
 
 cli () {
 
-	for args in "$@"
+	for i in "$@"
 		do
-			case $args in
+			case $i in
 			
 				-b=*|--branch=*)
-					OPENWRT_WORKING_BRANCH_VER="${args#*=}"
+					OPENWRT_WORKING_BRANCH_VER="${i#*=}"
 					shift # past argument=value
 				;;
 				
