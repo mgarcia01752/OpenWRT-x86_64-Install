@@ -35,6 +35,7 @@ FRESH_INSTALL=""
 MAKE_OPENWRT=""
 DEV_BLOCK=""
 BOOTLOADER_TYPE=""
+REMOVE_STDOUT_SUPPRES=""
 
 				############
 				#  Functions
@@ -163,7 +164,7 @@ format_block_device () {
 
 copy_image_to_media () {
 		
-	format_block_device ${DEV_BLOCK}
+	format_block_device
 	
 	bt=""
 	
