@@ -74,3 +74,4 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 		
 		/dev/sdc
 
+
