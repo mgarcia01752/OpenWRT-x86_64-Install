@@ -19,12 +19,15 @@
 TRUE=1;
 FALSE=0;
 
+VERSION="1.0.0"
+
 OPENWRT_DEFAULT_BRANCH="master"
 OPENWRT_WORKING_BRANCH_VER=${OPENWRT_DEFAULT_BRANCH}
 OPENWRT_DEFAULT_x86_64_CONFIG="_.config-x86_64-base-configuration"
 OPENWRT_WD=$PWD
 
-FRESH_INSTALL="";
+FRESH_INSTALL=""
+MEDIA_TYPE=""
 
 				############
 				#  Functions
@@ -120,12 +123,15 @@ update_local_openwrt_feeds_packages () {
 usage () {
 	echo
 	echo "OpenWRT x86-64 Installation"
+	echo 
+	echo "Version: ${VERSION}"
 	echo
 	echo "Usage:"
-	printf "\t-f, --fresh\t\tFresh Install, Remove previous installation\n"
-	printf "\t-b, --branch [${OPENWRT_DEFAULT_BRANCH}]\tOpenWRT install branch\n"
-	printf "\t-r, --remove\t\tRemove OpenWRT directories, then exit\n"
-	print "\t-make\t\tBuild OpenWRT\n"
+	printf "\t-f \t\tFresh Install, Remove previous installation\n"
+	printf "\t-b [${OPENWRT_DEFAULT_BRANCH}]\tOpenWRT install branch\n"
+	printf "\t-rt\tRemove OpenWRT directories, then exit\n"
+	printf "\t-m\t\tBuild OpenWRT\n"
+	printf "\t-c <media_type>\t\t Location: /dev/<medial_type>\n"	
 	printf "\n\n\n"
 }
 
@@ -141,32 +147,48 @@ build_openwrt () {
 	make -j10
 }
 
+copy_image_to_media () {
+
+
+
+}
+
 							########
 							#  MAIN
 							########
 
-while getopts "b:frm" OPTION; do
+while getopts "b:frmvc" OPTION; do
 	case $OPTION in
 	
-		b)
+		b) #Source OpenWRT from GitHub
 			OPENWRT_WORKING_BRANCH_VER="$OPTARG"
 			echo "OpenWRT branch selected:  $OPENWRT_WORKING_BRANCH_VER"
 			;;
 			
-		f)
+		f) #Create a new OpenWRT installation
 			FRESH_INSTALL=${TRUE}
 			;;
 			
-		r)
+		r) #Remove OpenWRT Build directories
 			remove_openwrt_instance
 			exit;			
 			;;
 			
-		m)
+		m) #Build OpenWRT
 			MAKE_OPENWRT=${TRUE}
 			;;
 			
-		?)
+		v) #Print version then exit
+			echo ${VERSION}
+			exit
+			;;
+
+		c) #Copy Image to Media
+			MEDIA_TYPE="$OPTARG" 
+			exit
+			;;
+	
+		? | h)
 			usage
 			exit
 			;;
