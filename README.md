@@ -26,7 +26,7 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 
 		createOpenWrtInstant.sh -m
 
-### Install OpenWRT master branch, build image and create bootable image on media
+### Install OpenWRT master branch, build image and create bootable ext4-fs image on media
 
 		createOpenWrtInstant.sh -m -c EFI /dev/sdb
 		
@@ -81,9 +81,9 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 	cd OpenWRT-x86_64-Install
 	createOpenWrtInstant.sh -m
 	
-	At this point, you will have an image to manually install on whatever media you prefer. Steps 4 and 5 will provide some guadiance.
+  At this point, you will have an image to manually install on whatever media you prefer. Steps 4 and 5 will provide some guadiance.
 	
-	You can use -c option to have the script install the image for you. Make sure you select the correct media device. 
+  You can use -c option to have the script install the image for you. Make sure you select the correct media device. 
 
 ## Step 4:
 
