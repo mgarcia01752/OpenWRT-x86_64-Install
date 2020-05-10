@@ -260,7 +260,7 @@ update_local_openwrt_feeds_packages
 copy_x86_64_default_config
 
 # Build image if selected
-[ ${MAKE_OPENWRT} -eq ${TRUE} ] &&  {
+[ "${MAKE_OPENWRT}" == "${TRUE}" ] &&  {
 	
 	print_log "Building OpenWRT Images"
 	build_openwrt
