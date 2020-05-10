@@ -34,7 +34,7 @@ LOG_FILE_PATH=${OPENWRT_WD}/${LOG_FILE}
 FRESH_INSTALL=""
 MAKE_OPENWRT=""
 DEV_BLOCK=""
-BOOT_TYPE=""
+BOOTLOADER_TYPE=""
 
 				############
 				#  Functions
@@ -167,7 +167,7 @@ copy_image_to_media () {
 	
 	bt=""
 	
-	[ ${BOOT_TYPE} == "EFI" ] && {
+	[ ${BOOTLOADER_TYPE} == "EFI" ] && {
 		print_log "EFI image selected"
 		bt="-efi"		
 	}
@@ -239,7 +239,7 @@ while getopts ":b:c:frmv" OPTION; do
 			;;
 
 		c) 
-			eval "BOOT_TYPE=\${$((OPTIND-1))}"
+			eval "BOOTLOADER_TYPE=\${$((OPTIND-1))}"
 			eval "DEV_BLOCK=\${$((OPTIND))}"
 			
 			[ ${OPTARG} != "EFI" ] && [ ${OPTARG} != "LEGACY" ]  && {
@@ -299,7 +299,7 @@ shift $((OPTIND-1))
  }
  
  #Make sure creating image is selected and images directoy is present
- [ "${BOOT_TYPE}" != "" ] && [ "${DEV_BLOCK}" != "" ] && [ -d "${OPENWRT_WD}/openwrt/images" ]  && {
+ [ "${BOOTLOADER_TYPE}" != "" ] && [ "${DEV_BLOCK}" != "" ] && [ -d "${OPENWRT_WD}/openwrt/images" ]  && {
 	print_log "Creating bootable media on ${DEV_BLOCK}"
 	copy_image_to_media	
  }
