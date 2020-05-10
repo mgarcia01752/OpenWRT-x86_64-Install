@@ -49,6 +49,25 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 	cd OpenWRT-x86_64-Install
 	createOpenWrtInstant.sh
 
-
+## Step 4:
+	
+	4.1 List block devices
+	
+		lsblk -I 8 -d
+		
+		NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+		sda    8:0    0 465.8G  0 disk 
+		sdb    8:16   1 465.8G  0 disk 
+	
+	4.2 Insert USB or mSATA drive
+		
+	4.3 List block devices again
+	
+		NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+		sda    8:0    0 465.8G  0 disk 
+		sdb    8:16   1 465.8G  0 disk 
+		sdc    8:32   1   7.5G  0 disk
+		
+	
 
 

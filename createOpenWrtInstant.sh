@@ -26,41 +26,21 @@ OPENWRT_WORKING_BRANCH_VER=${OPENWRT_DEFAULT_BRANCH}
 OPENWRT_DEFAULT_x86_64_CONFIG="_.config-x86_64-base-configuration"
 OPENWRT_WD=$PWD
 
+#Build Options
 FRESH_INSTALL=""
+MAKE_OPENWRT=""
 MEDIA_TYPE=""
+BOOT_TYPE=""
 
 				############
 				#  Functions
 				############
 				
 remove_openwrt_instance() {
-  rm -rf openwrt/ luci/ telephony/ packages/
-}
-
-prepare_openwrt_installation () {
-	sudo apt-get install git
-	sudo apt-get install make
-	sudo apt-get install gcc
-	sudo apt-get install binutils
-	sudo apt-get install bzip2
-	sudo apt-get install flex
-	sudo apt-get install python
-	sudo apt-get install python3.5+
-	sudo apt-get install python2-doc python-tk python2.7-doc binfmt-support
-	sudo apt-get install libpython2-stdlib libpython2.7-minimal libpython2.7-stdlib python-is-python2 python2 python2-minimal python2.7 python2.7-minimal
-	sudo apt-get install perl
-	sudo apt-get install grep
-	sudo apt-get install diffutils
-	sudo apt-get install unzip
-	sudo apt-get install getopt
-	sudo apt-get install subversion
-	sudo apt-get install libz-dev
-	sudo apt-get install libc
-	sudo apt-get install g++
-	sudo apt-get install gawk
-	sudo apt-get install zlib1g libncurses5 g++ flex
-	sudo apt-get install build-essential libncurses5 zlib1g flex
-	sudo apt-get install libncurses-dev	
+	rm -rf 	${OPENWRT_WD}/openwrt/		\
+				${OPENWRT_WD}/luci/ 				\
+				${OPENWRT_WD}/telephony/ 	\
+				${OPENWRT_WD}/packages/
 }
 
 pull_latest_openwrt_updates () {
@@ -120,6 +100,21 @@ update_local_openwrt_feeds_packages () {
 	$OPENWRT_WD/openwrt/scripts/feeds install -a
 }
 
+copy_x86_64_default_config () {
+	cp config/${OPENWRT_DEFAULT_x86_64_CONFIG} openwrt/.config
+}
+
+build_openwrt () {
+	cd ${OPENWRT_WD}/openwrt
+	make defconfig
+	make -j10
+}
+
+copy_image_to_media () {
+	file="${OPENWRT_WD}/openwrt/bin/target/x86/64"
+	gzip -d $file >> sudo dd if=$file of="/dev/${MEDIA_TYPE}" bs=1M && sync
+}
+
 usage () {
 	echo
 	echo "OpenWRT x86-64 Installation"
@@ -127,31 +122,15 @@ usage () {
 	echo "Version: ${VERSION}"
 	echo
 	echo "Usage:"
-	printf "\t-f \t\tFresh Install, Remove previous installation\n"
-	printf "\t-b [${OPENWRT_DEFAULT_BRANCH}]\tOpenWRT install branch\n"
-	printf "\t-rt\tRemove OpenWRT directories, then exit\n"
-	printf "\t-m\t\tBuild OpenWRT\n"
-	printf "\t-c <media_type>\t\t Location: /dev/<medial_type>\n"	
+	printf "\t-f \t\t\t\tFresh Install, Remove previous installation\n"
+	printf "\t-b [${OPENWRT_DEFAULT_BRANCH}]\t\t\tOpenWRT install branch\n"
+	printf "\t-r\t\t\t\tRemove OpenWRT directories, then exit\n"
+	printf "\t-m\t\t\t\tBuild OpenWRT\n"
+	printf "\t-c [LEGACY|EFI] <media_type>\tLocation: /dev/<medial_type>\n"	
 	printf "\n\n\n"
 }
 
-copy_x86_64_default_config () {
-	cp config/${OPENWRT_DEFAULT_x86_64_CONFIG} openwrt/
-}
 
-build_openwrt () {
-	cd ${OPENWRT_WD}/openwrt
-	
-	make defconfig
-	
-	make -j10
-}
-
-copy_image_to_media () {
-
-
-
-}
 
 							########
 							#  MAIN
@@ -184,11 +163,12 @@ while getopts "b:frmvc" OPTION; do
 			;;
 
 		c) #Copy Image to Media
-			MEDIA_TYPE="$OPTARG" 
+			BOOT_TYPE="$OPTARG"; shift
+			MEDIA_TYPE="$OPTARG"; shift
 			exit
 			;;
 	
-		? | h)
+		?|h)
 			usage
 			exit
 			;;
@@ -209,12 +189,10 @@ if [  -n "${FRESH_INSTALL}"  ] || [ ! -d "openwrt" ]; then
 
 fi
 
-if [ -d "openwrt" ]  &&  [  ! -n "${FRESH_INSTALL}"  ]; then
-
+[ -d "openwrt" ]  &&  [  ! -n "${FRESH_INSTALL}"  ] && {
 	echo "Updating existing OpenWRT repository from Git Site"	
 	pull_latest_openwrt_updates
-
-fi
+}
 
 change_local_openwrt_branch $OPENWRT_WORKING_BRANCH_VER
 
@@ -224,8 +202,14 @@ update_local_openwrt_feeds_packages
 
 copy_x86_64_default_config
 
-if [ -n ${MAKE_OPENWRT} ]; then
+[ -n ${MAKE_OPENWRT} ] && {
 	build_openwrt
-fi
+}
+
+[ -n ${BOOT_TYPE} ] && [ -n ${MEDIA_TYPE} ] && {
+	copy_image_to_media
+}
+	
+
 
 
