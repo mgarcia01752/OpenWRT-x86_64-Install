@@ -51,7 +51,7 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 
 ## Step 4:
 	
-	4.1 List block devices
+### 4.1 List block devices
 	
 		lsblk -I 8 -d
 		
@@ -59,9 +59,9 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 		sda    8:0    0 465.8G  0 disk 
 		sdb    8:16   1 465.8G  0 disk 
 	
-	4.2 Insert USB or mSATA drive
+### 4.2 Insert USB or mSATA drive
 		
-	4.3 List block devices again
+### 4.3 List block devices again
 	
 		NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
 		sda    8:0    0 465.8G  0 disk 
