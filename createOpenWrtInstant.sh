@@ -26,6 +26,9 @@ OPENWRT_WORKING_BRANCH_VER=${OPENWRT_DEFAULT_BRANCH}
 OPENWRT_DEFAULT_x86_64_CONFIG="_.config-x86_64-base-configuration"
 OPENWRT_WD=$PWD
 
+EPOCH=`date +%s`
+LOG_FILE="openwrt_build_log-${EPOCH}.log"
+
 #Build Options
 FRESH_INSTALL=""
 MAKE_OPENWRT=""
@@ -35,8 +38,23 @@ BOOT_TYPE=""
 				############
 				#  Functions
 				############
-				
+
+print_log () {
+	
+	string=$1
+	
+	if [ ! -d ${LOG_FILE} ]; then
+		echo $string >> ${LOG_FILE}
+	else	
+		echo $string >> ${LOG_FILE}
+	fi
+	
+}
+			
 remove_openwrt_instance() {
+	
+	print_log "Removing previous OpenWRT directories instances"
+
 	rm -rf 	${OPENWRT_WD}/openwrt/		\
 				${OPENWRT_WD}/luci/ 				\
 				${OPENWRT_WD}/telephony/ 	\
@@ -44,7 +62,9 @@ remove_openwrt_instance() {
 }
 
 pull_latest_openwrt_updates () {
-
+	
+	print_log "Pulling the latest updated from OpenWRT Git site"
+	
 	cd $OPENWRT_WD/openwrt
 	git pull
 
@@ -61,32 +81,45 @@ pull_latest_openwrt_updates () {
 }
 
 create_local_openwrt_clone () {
+	
+	print_log "Cloning OpenWRT"
 	git clone https://github.com/openwrt/openwrt.git
+	
+	print_log "Cloning OpenWRT-packages"
 	git clone https://github.com/openwrt/packages.git
+	
+	print_log "Cloning OpenWRT-luci"
 	git clone https://github.com/openwrt/luci.git
+	
+	print_log "Cloning OpenWRT-telephony"
 	git clone https://github.com/openwrt/telephony.git
 }
 
 change_local_openwrt_branch () {
 	
 	cd $OPENWRT_WD/openwrt
+	print_log "Checkout OpenWRT branch ${OPENWRT_WORKING_BRANCH_VER}"
 	git checkout ${OPENWRT_WORKING_BRANCH_VER}
 	
 	cd $OPENWRT_WD/packages
+	print_log "Checkout OpenWRT-packages branch ${OPENWRT_WORKING_BRANCH_VER}"
 	git checkout ${OPENWRT_WORKING_BRANCH_VER}
 	
 	cd $OPENWRT_WD/luci
+	print_log "Checkout OpenWRT-luci branch ${OPENWRT_WORKING_BRANCH_VER}"
 	git checkout ${OPENWRT_WORKING_BRANCH_VER}
 	
 	cd $OPENWRT_WD/telephony
+	print_log "Checkout OpenWRT-telephony branch ${OPENWRT_WORKING_BRANCH_VER}"
 	git checkout ${OPENWRT_WORKING_BRANCH_VER}
-	
 	
 	cd $OPENWRT_WD
 }
 
 create_local_openwrt_feeds_config () {
-
+	
+	print_log "Creating local feeds.conf file"
+	
 	FEEDS_FILE="$OPENWRT_WD/openwrt/feeds.conf"
 
 	echo "src-link packages $OPENWRT_WD/packages" > $FEEDS_FILE
@@ -97,6 +130,9 @@ create_local_openwrt_feeds_config () {
 }
 
 update_local_openwrt_feeds_packages () {
+	
+	print_log "Updating and installing feeds"
+	
 	$OPENWRT_WD/openwrt/scripts/feeds update -a
 	$OPENWRT_WD/openwrt/scripts/feeds install -a
 }
@@ -112,9 +148,6 @@ build_openwrt () {
 }
 
 format_block_device () {
-	
-	echo "Block Device -> $1"
-	
 	printf "o\nn\n\n\n\n\nt\nc\nw\n" | sudo fdisk /dev/${1}
 	sudo mkdosfs /dev/${1}1
 }
@@ -154,8 +187,6 @@ usage () {
 	printf "\t-c [LEGACY|EFI] <media_type>\tLocation: /dev/<medial_type>\n"	
 	printf "\n\n\n"
 }
-
-
 
 							########
 							#  MAIN
@@ -206,11 +237,11 @@ shift $((OPTIND-1))
 if [  -n "${FRESH_INSTALL}"  ] || [ ! -d "openwrt" ]; then
 	
 	[ -d "openwrt" ] && {
-		echo "Removing all OpenWRT directories"
+		print_log "Removing all OpenWRT directories"
 		remove_openwrt_instance	
 	}
 
-	echo "Cloning OpenWRT ${OPENWRT_WORKING_BRANCH_VER} Branch"
+	print_log "Cloning OpenWRT ${OPENWRT_WORKING_BRANCH_VER} Branch"
 	create_local_openwrt_clone
 
 fi
@@ -230,16 +261,18 @@ copy_x86_64_default_config
 
 # Build image if selected
 [ -n ${MAKE_OPENWRT} ] &&  {
-
+	
+	print_log "Building OpenWRT Images"
 	build_openwrt
 	
 	#Create directory if it does not exist
 	[ ! -d ${OPENWRT_WD}/openwrt/images ] && {
+		print_log "Creating image directoy for x86-64 EFI and Legacy images"
 		mkdir ${OPENWRT_WD}/openwrt/images 
 	}
 	
 	#Copy images to image directory
-	echo "Coping OpenWRT images to ${OPENWRT_WD}/openwrt/images"
+	print_log "Coping OpenWRT images to ${OPENWRT_WD}/openwrt/images"
 	cp ${OPENWRT_WD}/openwrt/bin/targets/x86/64/*.gz ${OPENWRT_WD}/openwrt/images
 	
  }
