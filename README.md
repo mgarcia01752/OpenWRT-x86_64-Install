@@ -50,6 +50,8 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 	createOpenWrtInstant.sh
 
 ## Step 4:
+
+	Determine the media block device location
 	
 ### 4.1 List block devices
 	
@@ -68,10 +70,24 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 		sdb    8:16   1 465.8G  0 disk 
 		sdc    8:32   1   7.5G  0 disk
 		
-###		Make note of the change
+### 4.4 Make note of the change
 		
 		sdc    8:32   1   7.5G  0 disk
 		
 		/dev/sdc
 
+## Step 5:
 
+	Prepare media drive for image
+		
+		drive="sdc"
+		printf "o\nn\n\n\n\n\nt\nc\nw\n" | sudo fdisk /dev/${drive}
+		sudo mkdosfs /dev/${drive}1
+
+## Step 6:
+		
+		drive=sdc
+		gzip -dc openwrt-x86-64-generic-ext4-combined-efi.img.gz | sudo dd of=/dev/${drive} bs=1M status=progress && sync
+		
+		
+		

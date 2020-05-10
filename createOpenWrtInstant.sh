@@ -81,6 +81,7 @@ change_local_openwrt_branch () {
 	cd $OPENWRT_WD/telephony
 	git checkout ${OPENWRT_WORKING_BRANCH_VER}
 	
+	
 	cd $OPENWRT_WD
 }
 
@@ -110,9 +111,33 @@ build_openwrt () {
 	make -j10
 }
 
+format_block_device () {
+	
+	echo "Block Device -> $1"
+	
+	printf "o\nn\n\n\n\n\nt\nc\nw\n" | sudo fdisk /dev/${1}
+	sudo mkdosfs /dev/${1}1
+}
+
 copy_image_to_media () {
-	file="${OPENWRT_WD}/openwrt/bin/target/x86/64"
-	gzip -d $file >> sudo dd if=$file of="/dev/${MEDIA_TYPE}" bs=1M && sync
+	
+	boot_type=$1
+	block_device=$2
+	
+	format_block_device ${block_device}
+	
+	bt=""
+	
+	[ ${boot_type} == "EFI" ] && { 
+		bt="-efi"		
+	}
+	
+	img="openwrt-x86-64-generic-ext4-combined${bt}.img.gz"
+		
+	file="${OPENWRT_WD}/openwrt/bin/target/x86/64/${img}"
+	
+	gzip -dc $file | sudo dd of="/dev/${MEDIA_TYPE}" bs=1M status=progress && sync
+	
 }
 
 usage () {
@@ -136,35 +161,36 @@ usage () {
 							#  MAIN
 							########
 
-while getopts "b:frmvc" OPTION; do
+while getopts ":b:c:frmv" OPTION; do
 	case $OPTION in
 	
-		b) #Source OpenWRT from GitHub
+		b) 
 			OPENWRT_WORKING_BRANCH_VER="$OPTARG"
 			echo "OpenWRT branch selected:  $OPENWRT_WORKING_BRANCH_VER"
 			;;
 			
-		f) #Create a new OpenWRT installation
+		f) 
 			FRESH_INSTALL=${TRUE}
 			;;
 			
-		r) #Remove OpenWRT Build directories
+		r)
 			remove_openwrt_instance
 			exit;			
 			;;
 			
-		m) #Build OpenWRT
+		m)
 			MAKE_OPENWRT=${TRUE}
 			;;
 			
-		v) #Print version then exit
+		v) 
 			echo ${VERSION}
 			exit
 			;;
 
-		c) #Copy Image to Media
-			BOOT_TYPE="$OPTARG"; shift
-			MEDIA_TYPE="$OPTARG"; shift
+		c) 
+			BOOT_TYPE="$OPTARG";shift
+			MEDIA_TYPE="$OPTARG";shift
+			copy_image_to_media $BOOT_TYPE $MEDIA_TYPE
 			exit
 			;;
 	
@@ -202,14 +228,18 @@ update_local_openwrt_feeds_packages
 
 copy_x86_64_default_config
 
-[ -n ${MAKE_OPENWRT} ] && {
+# Build image if selected
+[ -n ${MAKE_OPENWRT} ] &&  {
+
 	build_openwrt
-}
-
-[ -n ${BOOT_TYPE} ] && [ -n ${MEDIA_TYPE} ] && {
-	copy_image_to_media
-}
 	
-
-
-
+	#Create directory if it does not exist
+	[ ! -d ${OPENWRT_WD}/openwrt/images ] && {
+		mkdir ${OPENWRT_WD}/openwrt/images 
+	}
+	
+	#Copy images to image directory
+	echo "Coping OpenWRT images to ${OPENWRT_WD}/openwrt/images"
+	cp ${OPENWRT_WD}/openwrt/bin/targets/x86/64/*.gz ${OPENWRT_WD}/openwrt/images
+	
+ }
