@@ -176,11 +176,13 @@ while getopts "b:frm" OPTION; do
 done
 shift $((OPTIND-1))
 
-if [  -n "${FRESH_INSTALL}"  ]; then
+if [  -n "${FRESH_INSTALL}"  ] || [ ! -d "openwrt" ]; then
 	
-	echo "Removing all OpenWRT directories"
-	remove_openwrt_instance
-	
+	[ -d "openwrt" ] && {
+		echo "Removing all OpenWRT directories"
+		remove_openwrt_instance	
+	}
+
 	echo "Cloning OpenWRT ${OPENWRT_WORKING_BRANCH_VER} Branch"
 	create_local_openwrt_clone
 
