@@ -2,6 +2,38 @@
 
 This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy and EFI bootup. This installing has only been tested on Ubuntu 20.04, but there is no reason why it would not work on earlier releases.
 
+
+		OpenWRT x86-64 Installation
+
+		Version: 1.0.0
+
+		Usage:
+			-f 													Fresh Install, Remove previous installation
+			-b [master]									OpenWRT install branch
+			-r													Remove OpenWRT directories, then exit
+			-m												Build OpenWRT
+			-c [LEGACY|EFI] <DEV_BLOCK>	Create bootable media	Example: -c EFI /dev/sdb
+			-h													Print usage and exit
+			-v													Print version and exit
+
+## Usage
+
+### Install OpenWRT master branch
+
+		createOpenWrtInstant.sh
+
+### Install OpenWRT master branch and build image
+
+		createOpenWrtInstant.sh -m
+
+### Install OpenWRT master branch, build image and create bootable image on media
+
+		createOpenWrtInstant.sh -m -c EFI /dev/sdb
+		
+### Reinstall OpenWRT master branch when there is an existing OpenWRT
+
+		createOpenWrtInstant.sh -f
+
 ## Step 1:
 
   Copy and Paste the following and make sure that each of the required packages are installed. You may need to run this a couple of times.
