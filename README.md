@@ -68,6 +68,7 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 		sdb    8:16   1 465.8G  0 disk 
 		sdc    8:32   1   7.5G  0 disk
 		
-	
-
+   Make note of the change: sdc
+		
+		/dev/sdc
 
