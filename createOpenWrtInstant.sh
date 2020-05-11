@@ -27,8 +27,9 @@ OPENWRT_DEFAULT_x86_64_CONFIG="_.config-x86_64-base-configuration"
 OPENWRT_WD=$PWD
 
 EPOCH=`date +%s`
-LOG_FILE="openwrt_build_log-${EPOCH}.log"
-LOG_FILE_PATH=${OPENWRT_WD}/${LOG_FILE}
+
+LOG_FILE_PATH="${OPENWRT_WD}/log"
+LOG_FILE="${LOG_FILE_PATH}/build_log-${EPOCH}.log"
 
 #Build Options
 FRESH_INSTALL=""
@@ -40,6 +41,15 @@ REMOVE_STDOUT_SUPPRES=""
 				############
 				#  Functions
 				############
+init () {
+
+	# Create log directory if it does not exists
+	[ ! -d log ] && {
+		mkdir ${LOG_FILE_PATH}
+	}
+	
+
+}
 
 check_github_connection () {
 	
@@ -56,10 +66,10 @@ print_log () {
 	
 	string=$1
 	
-	if [ ! -d ${LOG_FILE_PATH} ]; then
-		echo $string > ${LOG_FILE_PATH}
+	if [ ! -d ${LOG_FILE} ]; then
+		echo $string > ${LOG_FILE}
 	else	
-		echo $string >> ${LOG_FILE_PATH}
+		echo $string >> ${LOG_FILE}
 	fi
 	
 	printf "${string}\n"
@@ -272,6 +282,8 @@ while getopts ":b:c:frmv" OPTION; do
 	esac
 done
 shift $((OPTIND-1))
+
+init
 
 [  -n "${FRESH_INSTALL}"  ] || [ ! -d "openwrt" ]  && {
 	
