@@ -36,6 +36,7 @@ MAKE_OPENWRT=""
 DEV_BLOCK=""
 BOOTLOADER_TYPE=""
 REMOVE_STDOUT_SUPPRES=""
+IGNORE_FRESH_UPDATE=""
 
 				############
 				#  Functions
@@ -154,7 +155,7 @@ build_openwrt () {
 
 format_block_device () {
 	
-	print_log "FDISK ${DEV_BLOCK}"
+	print_log "fdisk ${DEV_BLOCK}"
 	printf "o\nn\n\n\n\n\nt\nc\nw\n" | sudo fdisk ${DEV_BLOCK} &> /dev/null
 	
 	print_log "Creating DOS partion on ${DEV_BLOCK}1"
@@ -199,11 +200,12 @@ usage () {
 	echo "Version: ${VERSION}"
 	echo
 	echo "Usage:"
-	printf "\t-f \t\t\t\tFresh Install, Remove previous installation\n"
 	printf "\t-b [${OPENWRT_DEFAULT_BRANCH}]\t\t\tOpenWRT install branch\n"
+	printf "\t-c [LEGACY|EFI] <DEV_BLOCK>\tCreate bootable media\tExample: -c EFI /dev/sdb\n"
+	printf "\t-f \t\t\t\tFresh Install, Remove previous installation\n"
+	printf "\t-i \t\t\t\tIgnore fresh or update OpenWRT installation\n"
 	printf "\t-r\t\t\t\tRemove OpenWRT directories, then exit\n"
 	printf "\t-m\t\t\t\tBuild OpenWRT\n"
-	printf "\t-c [LEGACY|EFI] <DEV_BLOCK>\tCreate bootable media\tExample: -c EFI /dev/sdb\n"
 	printf "\t-h\t\t\t\tPrint usage and exit\n"
 	printf "\t-v\t\t\t\tPrint version and exit\n"
 	printf "\n\n\n"
@@ -220,9 +222,23 @@ while getopts ":b:c:frmv" OPTION; do
 			OPENWRT_WORKING_BRANCH_VER="$OPTARG"
 			print_log "OpenWRT branch selected:  $OPENWRT_WORKING_BRANCH_VER"
 			;;
+
+		c) 
+			eval "BOOTLOADER_TYPE=\${$((OPTIND-1))}"
+			eval "DEV_BLOCK=\${$((OPTIND))}"
+			
+			[ ${OPTARG} != "EFI" ] && [ ${OPTARG} != "LEGACY" ]  && {
+				usage
+				exit
+			}	
+			;;
 			
 		f) 
 			FRESH_INSTALL=${TRUE}
+			;;
+			
+		i)
+			IGNORE_FRESH_UPDATE=${TRUE}
 			;;
 			
 		r)
@@ -239,16 +255,6 @@ while getopts ":b:c:frmv" OPTION; do
 			exit
 			;;
 
-		c) 
-			eval "BOOTLOADER_TYPE=\${$((OPTIND-1))}"
-			eval "DEV_BLOCK=\${$((OPTIND))}"
-			
-			[ ${OPTARG} != "EFI" ] && [ ${OPTARG} != "LEGACY" ]  && {
-				usage
-				exit
-			}	
-			;;
-	
 		?|h)
 			usage
 			exit
@@ -258,7 +264,7 @@ while getopts ":b:c:frmv" OPTION; do
 done
 shift $((OPTIND-1))
 
-[  -n "${FRESH_INSTALL}"  ] || [ ! -d "openwrt" ] && {
+[  -n "${FRESH_INSTALL}"  ] || [ ! -d "openwrt" ] && [ "${IGNORE_FRESH_UPDATE}" != "" ] &&  {
 	
 	[ -d "openwrt" ] && {
 		print_log "Removing all OpenWRT directories"
@@ -272,7 +278,7 @@ shift $((OPTIND-1))
 
 }
 
-[ -d "openwrt" ]  &&  [  ! -n "${FRESH_INSTALL}"  ] && {
+[ -d "openwrt" ]  &&  [  ! -n "${FRESH_INSTALL}"  ] && [ "${IGNORE_FRESH_UPDATE}" != "" ] &&  {
 	
 	print_log "Updating existing OpenWRT repository from Git Site"	
 	pull_latest_openwrt_updates
