@@ -294,7 +294,7 @@ shift $((OPTIND-1))
 	}
 	
 	#Copy images to image directory
-	print_log "Coping OpenWRT images to ${OPENWRT_WD}/openwrt/images"
+	print_log "Copying OpenWRT images to ${OPENWRT_WD}/openwrt/images"
 	cp ${OPENWRT_WD}/openwrt/bin/targets/x86/64/*.gz ${OPENWRT_WD}/openwrt/images &> /dev/null
 	
  }
