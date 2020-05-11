@@ -156,10 +156,10 @@ build_openwrt () {
 format_block_device () {
 	
 	print_log "fdisk ${DEV_BLOCK}"
-	printf "o\nn\n\n\n\n\nt\nc\nw\n" | sudo fdisk ${DEV_BLOCK} # &> /dev/null
+	printf "o\nn\n\n\n\n\n\n\nt\nc\nw\n" | sudo fdisk ${DEV_BLOCK} &> /dev/null
 	
 	print_log "Creating DOS partion on ${DEV_BLOCK}1"
-	sudo mkdosfs ${DEV_BLOCK}1 # &> /dev/null
+	sudo mkdosfs ${DEV_BLOCK}1 &> /dev/null
 	
 }
 
@@ -185,8 +185,9 @@ copy_image_to_media () {
 	print_log "Target Image:\t${img}"
 	print_log "Target Device:\t${DEV_BLOCK}"
 	
-	gzip -dc $file &> /dev/null | sudo dd of="${DEV_BLOCK}" bs=1M status=progress && sync &> /dev/null
-	
+	gzip -fk -d $file &> /dev/null 
+	sudo dd if=$(echo "$file" | sed -e 's/\.[^.]*$//') of="${DEV_BLOCK}" bs=1M status=progress && sync &> /dev/null 
+
 }
 
 prep_openwrt_branch_feeds_config () {
