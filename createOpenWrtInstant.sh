@@ -42,6 +42,17 @@ IGNORE_FRESH_UPDATE=""
 				#  Functions
 				############
 
+check_github_connection () {
+	
+	status=${FALSE}
+	
+	[ ping https://github.com ] && {
+		status=${TRUE}
+	}
+	
+	echo ${status}
+}
+
 print_log () {
 	
 	string=$1
