@@ -156,10 +156,10 @@ build_openwrt () {
 format_block_device () {
 	
 	print_log "fdisk ${DEV_BLOCK}"
-	printf "o\nn\n\n\n\n\nt\nc\nw\n" | sudo fdisk ${DEV_BLOCK} &> /dev/null
+	printf "o\nn\n\n\n\n\nt\nc\nw\n" | sudo fdisk ${DEV_BLOCK} # &> /dev/null
 	
 	print_log "Creating DOS partion on ${DEV_BLOCK}1"
-	sudo mkdosfs ${DEV_BLOCK}1 &> /dev/null
+	sudo mkdosfs ${DEV_BLOCK}1 # &> /dev/null
 	
 }
 
