@@ -52,7 +52,7 @@ print_log () {
 		echo $string >> ${LOG_FILE_PATH}
 	fi
 	
-	echo $string
+	printf "${string}\n"
 	
 }
 			
@@ -178,9 +178,12 @@ copy_image_to_media () {
 	# EFI -> openwrt-x86-64-generic-ext4-combined-efi.img.gz
 	# LEG -> openwrt-x86-64-generic-ext4-combined.img.gz
 	###################################################
+	
 	img="openwrt-x86-64-generic-ext4-combined${bt}.img.gz"
-		
 	file="${OPENWRT_WD}/openwrt/images/${img}"
+	
+	print_log "Target Image:\t${img}"
+	print_log "Target Device:\t${DEV_BLOCK}"
 	
 	gzip -dc $file &> /dev/null | sudo dd of="${DEV_BLOCK}" bs=1M status=progress && sync &> /dev/null
 	
