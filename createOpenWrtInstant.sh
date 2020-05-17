@@ -41,6 +41,11 @@ STDOUT_REDIRECT=" &> /dev/null"
 				############
 				#  Functions
 				############
+cmd () {	
+	_cmd="$1 ${STDOUT_REDIRECT}"
+	eval ${_cmd}
+}
+
 init () {
 
 	# Create log directory if it does not exists
@@ -80,10 +85,11 @@ remove_openwrt_instance() {
 	
 	print_log "Removing previous OpenWRT directories instances"
 
-	rm -rf 	${OPENWRT_WD}/openwrt/		\
+	cmd "rm -rf 	${OPENWRT_WD}/openwrt/		\
 				${OPENWRT_WD}/luci/			\
 				${OPENWRT_WD}/telephony/ 	\
-				${OPENWRT_WD}/packages/ ${STDOUT_REDIRECT}
+				${OPENWRT_WD}/packages/"
+
 }
 
 pull_latest_openwrt_updates () {
@@ -91,16 +97,16 @@ pull_latest_openwrt_updates () {
 	print_log "Pulling the latest updated from OpenWRT Git site"
 	
 	cd $OPENWRT_WD/openwrt
-	git pull ${STDOUT_REDIRECT}
+	cmd "git pull"
 
 	cd $OPENWRT_WD/luci  
-	git pull ${STDOUT_REDIRECT}
+	cmd "git pull"
 
 	cd $OPENWRT_WD/packages
-	git pull ${STDOUT_REDIRECT}
+	cmd "git pull"
 
 	cd $OPENWRT_WD/telephony
-	git pull ${STDOUT_REDIRECT}
+	cmd "git pull"
 
 	cd $OPENWRT_WD
 }
@@ -108,35 +114,35 @@ pull_latest_openwrt_updates () {
 create_local_openwrt_clone () {
 	
 	print_log "Cloning OpenWRT-main"
-	git clone https://github.com/openwrt/openwrt.git ${STDOUT_REDIRECT}
+	cmd "git clone https://github.com/openwrt/openwrt.git"
 	
 	print_log "Cloning OpenWRT-packages"
-	git clone https://github.com/openwrt/packages.git ${STDOUT_REDIRECT}
+	cmd "git clone https://github.com/openwrt/packages.git"
 	
 	print_log "Cloning OpenWRT-luci"
-	git clone https://github.com/openwrt/luci.git ${STDOUT_REDIRECT}
+	cmd "git clone https://github.com/openwrt/luci.git"
 	
 	print_log "Cloning OpenWRT-telephony"
-	git clone https://github.com/openwrt/telephony.git ${STDOUT_REDIRECT}
+	cmd "git clone https://github.com/openwrt/telephony.git"
 }
 
 change_local_openwrt_branch () {
 	
 	cd $OPENWRT_WD/openwrt
 	print_log "Checkout OpenWRT branch ${OPENWRT_WORKING_BRANCH_VER}"
-	git checkout ${OPENWRT_WORKING_BRANCH_VER} ${STDOUT_REDIRECT}
+	cmd "git checkout ${OPENWRT_WORKING_BRANCH_VER}"
 	
 	cd $OPENWRT_WD/packages
 	print_log "Checkout OpenWRT-packages branch ${OPENWRT_WORKING_BRANCH_VER}"
-	git checkout ${OPENWRT_WORKING_BRANCH_VER} ${STDOUT_REDIRECT}
+	cmd "git checkout ${OPENWRT_WORKING_BRANCH_VER}"
 	
 	cd $OPENWRT_WD/luci
 	print_log "Checkout OpenWRT-luci branch ${OPENWRT_WORKING_BRANCH_VER}"
-	git checkout ${OPENWRT_WORKING_BRANCH_VER} ${STDOUT_REDIRECT}
+	cmd "git checkout ${OPENWRT_WORKING_BRANCH_VER}"
 	
 	cd $OPENWRT_WD/telephony
 	print_log "Checkout OpenWRT-telephony branch ${OPENWRT_WORKING_BRANCH_VER}"
-	git checkout ${OPENWRT_WORKING_BRANCH_VER} ${STDOUT_REDIRECT}
+	cmd "git checkout ${OPENWRT_WORKING_BRANCH_VER}"
 	
 	cd $OPENWRT_WD
 }
@@ -157,10 +163,10 @@ create_local_openwrt_feeds_config () {
 update_local_openwrt_feeds_packages () {
 	
 	print_log "Updating local feeds"	
-	$OPENWRT_WD/openwrt/scripts/feeds update -a ${STDOUT_REDIRECT}
+	cmd "$OPENWRT_WD/openwrt/scripts/feeds update -a"
 	
 	print_log "Installing local feeds"
-	$OPENWRT_WD/openwrt/scripts/feeds install -a ${STDOUT_REDIRECT}
+	cmd "$OPENWRT_WD/openwrt/scripts/feeds install -a"
 }
 
 copy_x86_64_default_config () {
@@ -169,17 +175,17 @@ copy_x86_64_default_config () {
 
 build_openwrt () {
 	cd ${OPENWRT_WD}/openwrt
-	make defconfig ${STDOUT_REDIRECT}
+	cmd "make defconfig"
 	make -j10
 }
 
 format_block_device () {
 	
 	print_log "fdisk ${DEV_BLOCK}"
-	printf "o\nn\n\n\n\n\n\n\nt\nc\nw\n" | sudo fdisk ${DEV_BLOCK} ${STDOUT_REDIRECT}
+	printf "o\nn\n\n\n\n\n\n\nt\nc\nw\n" | cmd "sudo fdisk ${DEV_BLOCK}"
 	
 	print_log "Creating DOS partion on ${DEV_BLOCK}1"
-	sudo mkdosfs ${DEV_BLOCK}1 ${STDOUT_REDIRECT}
+	cmd "sudo mkdosfs ${DEV_BLOCK}1"
 	
 }
 
@@ -205,8 +211,8 @@ copy_image_to_media () {
 	print_log "Target Image:\t${img}"
 	print_log "Target Device:\t${DEV_BLOCK}"
 	
-	gzip -fk -d $file ${STDOUT_REDIRECT} 
-	sudo dd if=$(echo "$file" | sed -e 's/\.[^.]*$//') of="${DEV_BLOCK}" bs=1M status=progress && sync ${STDOUT_REDIRECT} 
+	cmd "gzip -fk -d $file"
+	cmd "sudo dd if=$(echo "$file" | sed -e 's/\.[^.]*$//') of="${DEV_BLOCK}" bs=1M status=progress && sync "
 
 }
 
@@ -239,7 +245,7 @@ usage () {
 							#  MAIN
 							########
 
-while getopts ":b:c:frmv" OPTION; do
+while getopts ":b:c:firmv" OPTION; do
 	case $OPTION in
 	
 		b) 
@@ -261,16 +267,16 @@ while getopts ":b:c:frmv" OPTION; do
 			FRESH_INSTALL=${TRUE}
 			;;
 		
-		i)
+		i) 
 			STDOUT_REDIRECT=""
 			;;
 			
-		r)
+		r) 
 			remove_openwrt_instance
 			exit
 			;;
 			
-		m)
+		m) 
 			MAKE_OPENWRT=${TRUE}
 			;;
 			
@@ -327,8 +333,7 @@ init
 	
 	#Copy images to image directory
 	print_log "Copying OpenWRT images to ${OPENWRT_WD}/openwrt/images"
-	cp ${OPENWRT_WD}/openwrt/bin/targets/x86/64/*.gz ${OPENWRT_WD}/openwrt/images ${STDOUT_REDIRECT}
-	
+	cmd "cp ${OPENWRT_WD}/openwrt/bin/targets/x86/64/*.gz ${OPENWRT_WD}/openwrt/images"
  }
  
  #Make sure creating image is selected and images directoy is present
