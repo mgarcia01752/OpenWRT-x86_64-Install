@@ -223,6 +223,27 @@ prep_openwrt_branch_feeds_config () {
 	copy_x86_64_default_config
 }
 
+umount_device () {
+	
+	#Must provide a device
+	[ ${1} != "" ] && {
+	
+		#get_lsblk_detail=`lsblk -P ${1} | tr "\n" " "`
+
+		for blk_detail in `lsblk -P ${1} | tr "\n" " "`
+		do
+			
+			#Match Example -> MOUNTPOINT="/media/maurice/rootfs"
+			[[ $blk_detail =~ ^MOUNTPOINT=\"(.*)\"$ ]] && [ "${BASH_REMATCH[1]}" != "" ] && {	
+				echo "Unmounting:  ${BASH_REMATCH[1]} on device: ${1}"
+				cmd "sudo umount ${BASH_REMATCH[1]}"
+			}
+
+		done
+	}
+	
+}
+
 usage () {
 	echo
 	echo "OpenWRT x86-64 Installation"
@@ -339,6 +360,7 @@ init
  #Make sure creating image is selected and images directoy is present
  [ "${BOOTLOADER_TYPE}" != "" ] && [ "${DEV_BLOCK}" != "" ] && [ -d "${OPENWRT_WD}/openwrt/images" ]  && {
 	print_log "Creating bootable media on ${DEV_BLOCK}"
+	umount_device ${DEV_BLOCK}
 	copy_image_to_media	
  }
  
