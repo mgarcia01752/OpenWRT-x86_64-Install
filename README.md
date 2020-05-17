@@ -11,8 +11,9 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 			-b [master]			OpenWRT install branch
 			-c [LEGACY|EFI] <DEV_BLOCK>	Create bootable media	Example: -c EFI /dev/sdb
 			-f 				Fresh Install, Remove previous installation
+			-i  			Ignore Warning and Error Suppresion
 			-r				Remove OpenWRT directories, then exit
-			-m				Build OpenWRT
+			-m			Build OpenWRT
 			-h				Print usage and exit
 			-v				Print version and exit
 
