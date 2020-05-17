@@ -36,6 +36,8 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 
 		createOpenWrtInstant.sh -f
 
+## Manual steps to prepare installation
+
 ## Step 1:
 
   Copy and Paste the following and make sure that each of the required packages are installed. You may need to run this a couple of times.
@@ -87,7 +89,7 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 	
   You can use -c option to have the script install the image for you. Make sure you select the correct media device. 
 
-## Step 4:
+## Step 4: Manual step to copy image onto media
 
 	Determine the media block device location
 	
