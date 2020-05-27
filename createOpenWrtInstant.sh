@@ -41,6 +41,7 @@ STDOUT_REDIRECT=" &> /dev/null"
 				############
 				#  Functions
 				############
+
 cmd () {	
 	_cmd="$1 ${STDOUT_REDIRECT}"
 	eval ${_cmd}
@@ -71,13 +72,11 @@ print_log () {
 	
 	string=$1
 	
-	if [ ! -d ${LOG_FILE} ]; then
-		echo $string > ${LOG_FILE}
-	else	
-		echo $string >> ${LOG_FILE}
-	fi
+	time_stamp="[`date +%m-%d-%Y-%T`]"
 	
-	printf "${string}\n"
+	echo "${time_stamp} $string" >> ${LOG_FILE}
+	
+	printf "${time_stamp} ${string}\n"
 	
 }
 			
