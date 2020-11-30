@@ -51,7 +51,7 @@ print_log () {
 unmount () {
 	DEV_BLOCK=$1
 	
-	partionList=`lsblk -l ${DEV_BLOCK} -o NAME -n`
+	partionList=`lsblk -l ${DEV_BLOCK} -o NAME,TYPE -n | grep part | awk '{print $1}'`
 	
 	for part in $partionList; do
 		print_log "Unmounting /dev/${part}"
