@@ -148,7 +148,6 @@ usage () {
 	printf "\t-m <Device Block>\t\tMedia or Device Block\tExample: -m /dev/sdb\n"
 	printf "\t-b [LEGACY]|EFI\t\t\tCreate bootable media\tExample: -b EFI\n"
 	printf "\t-h\t\t\t\tPrint usage and exit\n"
-	printf "\t-v\t\t\t\tPrint version and exit\n"
 	printf "\n\n\n"
 }
 
