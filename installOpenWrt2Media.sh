@@ -31,7 +31,6 @@ DEV_BLOCK="/dev/sdb"
 BOOTLOADER_TYPE="LEGACY"
 STDOUT_REDIRECT=" &> /dev/null"
 
-
 cmd () {	
 	_cmd="$1 ${STDOUT_REDIRECT}"
 	eval ${_cmd}
@@ -164,7 +163,6 @@ while getopts ":b:c:firmv" OPTION; do
 			}	
 			;;
 			
-
 		?|h)
 			usage
 			exit
@@ -173,7 +171,6 @@ while getopts ":b:c:firmv" OPTION; do
 	esac
 done
 shift $((OPTIND-1))
-
 
 copy_image_to_disk $DEV_BLOCK $BOOTLOADER_TYPE
 
