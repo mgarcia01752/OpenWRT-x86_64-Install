@@ -48,6 +48,18 @@ print_log () {
 	
 }
 
+unmount () {
+	DEV_BLOCK=$1
+	
+	partionList=`lsblk -l ${DEV_BLOCK} -o NAME -n`
+	
+	for part in $partionList; do
+		print_log "Unmounting /dev/${part}"
+    		cmd "sudo umount /dev/${part}"
+	done
+
+}
+
 format_device () {
 	
 	# Example /dev/sdX
@@ -68,6 +80,8 @@ copy_image_to_disk () {
 	
 	# EFI or LEGACY
 	bootloaderType=$2
+	
+	unmount ${blockDev}
 	
 	format_device ${blockDev}
 	
@@ -146,12 +160,12 @@ if [[ $1 == "" ]]; then
 	exit;
 fi
 
-while getopts ":b:c:firmv" OPTION; do
+while getopts ":m:b:c:hv" OPTION; do
 	case $OPTION in
 	
 		m) 
 			DEV_BLOCK="$OPTARG"
-			print_log "OpenWRT branch selected:  $OPENWRT_WORKING_BRANCH_VER"
+			print_log "Media Location:  $DEV_BLOCK"
 			;;
 
 		b) 
