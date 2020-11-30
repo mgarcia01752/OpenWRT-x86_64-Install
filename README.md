@@ -89,45 +89,24 @@ This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy 
 	
   You can use -c option to have the script install the image for you. Make sure you select the correct media device. 
 
-## Step 4: Manual step to copy image onto media
+## Step 4: Copy image onto media
 
-	Determine the media block device location
-	
-### 4.1 List block devices
-	
-		lsblk -I 8 -d
-		
-		NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
-		sda    8:0    0 465.8G  0 disk 
-		sdb    8:16   1 465.8G  0 disk 
-	
-### 4.2 Insert USB or mSATA drive
-		
-### 4.3 List block devices again
-	
-		NAME MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
-		sda    8:0    0 465.8G  0 disk 
-		sdb    8:16   1 465.8G  0 disk 
-		sdc    8:32   1   7.5G  0 disk
-		
-### 4.4 Make note of the change
-		
-		sdc    8:32   1   7.5G  0 disk
-		
-		/dev/sdc
+  ./installOpenWrt2Media.sh -h
+  
+  
+	OpenWRT - Copy x86_64 image to media
 
-## Step 5:
+	Version: 1.0.0
 
-	Prepare media drive for image
+	Usage:
+		-m <Device Block>		Media or Device Block	Example: -m /dev/sdb
+		-b [LEGACY]|EFI			Create bootable media	Example: -b EFI
+		-h				Print usage and exit
+		-v				Print version and exit
 		
-		drive="sdc"
-		printf "o\nn\n\n\n\n\nt\nc\nw\n" | sudo fdisk /dev/${drive}
-		sudo mkdosfs /dev/${drive}1
+   ./installOpenWrt2Media.sh -m /dev/sdb -b LEGACY
 
-## Step 6:
-		
-		drive=sdc
-		gzip -dc openwrt-x86-64-generic-ext4-combined-efi.img.gz | sudo dd of=/dev/${drive} bs=1M status=progress && sync
-		
+
+
 		
 		
