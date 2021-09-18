@@ -2,6 +2,8 @@
 
 This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy and EFI bootup. This installing has only been tested on Ubuntu 20.04, but there is no reason why it would not work on earlier releases.
 
+OpenWRT is really created from BuildRoot. I recommend reviewing [BuildRoot Training PDF](https://docs.google.com/viewerng/viewer?url=http://bootlin.com/doc/training/buildroot/buildroot-slides.pdf) for clear details on adding packages to OpenWRT. 
+
 
 		OpenWRT x86-64 Installation
 
