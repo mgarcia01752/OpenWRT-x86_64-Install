@@ -67,6 +67,7 @@ OpenWRT is really created from BuildRoot. I recommend reviewing [BuildRoot Train
 	sudo apt-get install zlib1g libncurses5 g++ flex
 	sudo apt-get install build-essential libncurses5 zlib1g flex
 	sudo apt-get install libncurses-dev
+	sudo apt-get install python3-distutils
 
 
 ## Step 2:
