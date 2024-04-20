@@ -49,7 +49,7 @@ cmd () {
 
 init () {
 
-	# Create log directory if it does not exists
+	# Create log directory if it does not exist
 	[ ! -d log ] && {
 		mkdir ${LOG_FILE_PATH}
 	}
@@ -345,9 +345,9 @@ init
 	print_log "Building OpenWRT Images"
 	build_openwrt
 	
-	#Create directory if it does not exist
+	#Create the directory if it does not exist
 	[ ! -d "${OPENWRT_WD}/openwrt/images" ] && {
-		print_log "Creating image directoy for x86-64 EFI and Legacy images"
+		print_log "Creating image directory for x86-64 EFI and Legacy images"
 		mkdir ${OPENWRT_WD}/openwrt/images 
 	}
 	
@@ -356,7 +356,7 @@ init
 	cmd "cp ${OPENWRT_WD}/openwrt/bin/targets/x86/64/*.gz ${OPENWRT_WD}/openwrt/images"
  }
  
- #Make sure creating image is selected and images directoy is present
+ #Make sure creating image is selected, and images directory is present
  [ "${BOOTLOADER_TYPE}" != "" ] && [ "${DEV_BLOCK}" != "" ] && [ -d "${OPENWRT_WD}/openwrt/images" ]  && {
 	print_log "Creating bootable media on ${DEV_BLOCK}"
 	umount_device ${DEV_BLOCK}
