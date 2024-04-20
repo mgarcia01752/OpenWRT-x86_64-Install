@@ -1,6 +1,6 @@
 # OpenWRT-x86_64-Install
 
-This is a turn key script to create an OpenWRT x86_64 bootable image for Legacy and EFI bootup. This installing has only been tested on Ubuntu 20.04, but there is no reason why it would not work on earlier releases.
+This is a turnkey script to create an OpenWRT x86_64 bootable image for Legacy and EFI bootup. This installation has only been tested on Ubuntu 20.04, but there is no reason why it would not work on earlier releases.
 
 OpenWRT is really created from BuildRoot. I recommend reviewing [BuildRoot Training PDF](https://docs.google.com/viewerng/viewer?url=http://bootlin.com/doc/training/buildroot/buildroot-slides.pdf) for clear details on adding packages to OpenWRT. 
 
@@ -26,11 +26,11 @@ OpenWRT is really created from BuildRoot. I recommend reviewing [BuildRoot Train
 
 		createOpenWrtInstant.sh
 
-### Install OpenWRT master branch and build image
+### Install the OpenWRT master branch and build the image
 
 		createOpenWrtInstant.sh -m
 
-### Install OpenWRT master branch, build image and create bootable ext4-fs image on media
+### Install OpenWRT master branch, build image, and create bootable ext4-fs image on media
 
 		createOpenWrtInstant.sh -m -c EFI /dev/sdb
 		
@@ -42,33 +42,9 @@ OpenWRT is really created from BuildRoot. I recommend reviewing [BuildRoot Train
 
 ## Step 1:
 
-  Copy and Paste the following and make sure that each of the required packages are installed. You may need to run this a couple of times.
+  Copy and Paste the following and ensure that each required package is installed. You may need to run this a couple of times.
 
-	sudo apt-get install git
-	sudo apt-get install make
-	sudo apt-get install gcc
-	sudo apt-get install binutils
-	sudo apt-get install bzip2
-	sudo apt-get install flex
-	sudo apt-get install python
-	sudo apt-get install python3.5+
-	sudo apt-get install python2-doc python-tk python2.7-doc binfmt-support
-	sudo apt-get install libpython2-stdlib libpython2.7-minimal libpython2.7-stdlib python-is-python2 python2 python2-minimal python2.7 python2.7-minimal
-	sudo apt-get install perl
-	sudo apt-get install grep
-	sudo apt-get install diffutils
-	sudo apt-get install unzip
-	sudo apt-get install getopt
-	sudo apt-get install subversion
-	sudo apt-get install libz-dev
-	sudo apt-get install libc
-	sudo apt-get install g++
-	sudo apt-get install gawk
-	sudo apt-get install zlib1g libncurses5 g++ flex
-	sudo apt-get install build-essential libncurses5 zlib1g flex
-	sudo apt-get install libncurses-dev
-	sudo apt-get install python3-distutils
-
+	sudo apt-get install -y git make gcc binutils bzip2 flex python python3.5+ python2-doc python-tk python2.7-doc binfmt-support libpython2-stdlib libpython2.7-minimal libpython2.7-stdlib python-is-python2 python2 python2-minimal python2.7 python2.7-minimal perl 	grep diffutils unzip getopt subversion libz-dev libc g++ gawk zlib1g libncurses5 build-essential libncurses-dev python3-distutils
 
 ## Step 2:
 
@@ -81,7 +57,7 @@ OpenWRT is really created from BuildRoot. I recommend reviewing [BuildRoot Train
   	
   	1. Clone and create the required OpenWRT directories.
   	2. Create a feeds.conf file that is needed to point the required packages to the local computer
-  	3. Copy a base x86_64 configuration file that is needed to setup the gcc toolchain for compiling
+  	3. Copy a base x86_64 configuration file that is needed to set the gcc toolchain for compiling
 
   Copy/Paste the following:
   
@@ -89,7 +65,7 @@ OpenWRT is really created from BuildRoot. I recommend reviewing [BuildRoot Train
 	chmod +x createOpenWrtInstant.sh
 	./createOpenWrtInstant.sh -m
 	
-  At this point, you will have an image to manually install on whatever media you prefer. Steps 4 and 5 will provide some guadiance.
+  At this point, you will have an image to manually install on whatever media you prefer. Steps 4 and 5 will provide some guidance.
 	
   You can use -c option to have the script install the image for you. Make sure you select the correct media device. 
 
